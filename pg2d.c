@@ -1,49 +1,69 @@
 #include <stdio.h>
 
 int main() {
+
     int n;
+    int bt[20], pr[20], wt[20], tat[20], p[20];
+    int avwt = 0, avtat = 0;
+    int i, j, temp;
+
     printf("Enter Total Number of Process: ");
     scanf("%d", &n);
 
-    int bt[n], pr[n], p[n], wt[n], tat[n];
-    int total_wt = 0, total_tat = 0;
-
-    for(int i = 0; i < n; i++) {
+    /* ---- Input Section (like FCFS) ---- */
+    for(i = 0; i < n; i++) {
         p[i] = i + 1;
-        printf("\nP[%d]\nBurst Time: ", i+1);
+        printf("\nP[%d]\nBurst Time: ", i + 1);
         scanf("%d", &bt[i]);
         printf("Priority: ");
         scanf("%d", &pr[i]);
     }
 
-    for(int i = 0; i < n-1; i++) {
-        for(int j = i+1; j < n; j++) {
-            if(pr[j] < pr[i]) {
-                int temp;
-                temp = pr[i]; pr[i] = pr[j]; pr[j] = temp;
-                temp = bt[i]; bt[i] = bt[j]; bt[j] = temp;
-                temp = p[i]; p[i] = p[j]; p[j] = temp;
+    /* ---- Priority Sorting (extra step vs FCFS) ---- */
+    for(i = 0; i < n - 1; i++) {
+        for(j = i + 1; j < n; j++) {
+            if(pr[i] > pr[j]) {
+
+                temp = pr[i];
+                pr[i] = pr[j];
+                pr[j] = temp;
+
+                temp = bt[i];
+                bt[i] = bt[j];
+                bt[j] = temp;
+
+                temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
             }
         }
     }
 
+    /* ---- Waiting Time (same style as FCFS) ---- */
     wt[0] = 0;
-    for(int i = 1; i < n; i++) {
+    for(i = 1; i < n; i++) {
         wt[i] = 0;
-        for(int j = 0; j < i; j++)
+        for(j = 0; j < i; j++)
             wt[i] += bt[j];
-        total_wt += wt[i];
     }
 
     printf("\nProcess\tBurst Time\tWaiting Time\tTurnaround Time");
-    for(int i = 0; i < n; i++) {
+
+    /* ---- Turnaround Time + Average (same as FCFS) ---- */
+    for(i = 0; i < n; i++) {
         tat[i] = bt[i] + wt[i];
-        total_tat += tat[i];
-        printf("\nP[%d]\t\t%d\t\t%d\t\t%d", p[i], bt[i], wt[i], tat[i]);
+        avwt += wt[i];
+        avtat += tat[i];
+
+        printf("\nP[%d]\t\t%d\t\t%d\t\t%d",
+               p[i], bt[i], wt[i], tat[i]);
     }
 
-    printf("\n\nAverage Waiting Time=%d", total_wt / n);
-    printf("\nAverage Turnaround Time=%d\n", total_tat / n);
+    avwt /= n;
+    avtat /= n;
+
+    printf("\n\nAverage Waiting Time=%d", avwt);
+    printf("\nAverage Turnaround Time=%d\n", avtat);
 
     return 0;
 }

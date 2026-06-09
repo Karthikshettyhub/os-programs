@@ -1,0 +1,61 @@
+CREATE TABLE N_RollCall (
+student_id INT PRIMARY KEY,
+student_name VARCHAR(50),
+birth_date DATE
+);
+-- Create O_RollCall table with common data
+CREATE TABLE O_RollCall (
+student_id INT PRIMARY KEY,
+student_name VARCHAR(50),
+birth_date DATE
+);
+INSERT INTO O_RollCall VALUES(1, 'Shivanna', '1995-08-15'),(3, 'Raj', '1990-12-
+10');
+
+INSERT INTO N_RollCall (student_id, student_name, birth_date)
+VALUES
+(1, 'Shivanna', '1995-08-15'), -- Common record with O_RollCall
+(2, 'Giri', '1998-03-22'),
+(3, 'Raj', '1990-12-10'), -- Common record with O_RollCall
+(4, 'Devendra', '2000-05-18'),
+(5, 'Eshwar', '1997-09-03');
+
+SELECT * FROM N_RollCall;
+
+DELIMITER //
+
+CREATE PROCEDURE merge_data()
+BEGIN
+
+DECLARE done INT DEFAULT 0;
+DECLARE id INT;
+
+DECLARE cur CURSOR FOR
+SELECT student_id FROM N_RollCall;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=1;
+
+OPEN cur;
+
+loop1: LOOP
+
+FETCH cur INTO id;
+
+IF done THEN
+LEAVE loop1;
+END IF;
+
+INSERT IGNORE INTO O_RollCall(student_id)
+VALUES(id);
+
+END LOOP;
+
+CLOSE cur;
+
+END //
+
+DELIMITER ;
+
+CALL merge_data();
+
+SELECT * FROM O_RollCall;

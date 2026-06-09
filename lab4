@@ -1,0 +1,46 @@
+create table customer
+(ID int primary key,
+NAME varchar(20) not null,
+AGE int not null,
+ADDRESS varchar(20) not null,
+SALARY decimal(10,2) not null);
+
+insert into customer values
+(1,'Avinash',24,'Mangalore',20000),
+(2,'Bhavish',24,'Mangalore',30000),
+(3,'Chetan',24,'Mangalore',35000),
+(4,'Krithi',24,'Mangalore',50000),
+(5,'Ramya',24,'Mangalore',40000);
+
+DELIMITER //
+CREATE TRIGGER trg_after_insert
+AFTER INSERT ON customer
+FOR EACH ROW
+BEGIN
+SET @sal_msg = CONCAT('Inserted Salary: ', NEW.SALARY);
+END; //
+
+CREATE TRIGGER trg_after_update
+AFTER UPDATE ON customer
+FOR EACH ROW
+BEGIN
+SET @sal_msg = CONCAT('Salary Difference: ', NEW.SALARY - OLD.SALARY);
+END; //
+
+CREATE TRIGGER trg_after_delete
+AFTER DELETE ON customer
+FOR EACH ROW
+BEGIN
+SET @sal_msg = CONCAT('Deleted Salary: ', OLD.SALARY);
+END; //
+
+DELIMITER ;
+
+INSERT INTO customer VALUES (6,'Shankar',35,'Bangalore',50000);
+SELECT @sal_msg;
+
+UPDATE customer SET SALARY = 55000 WHERE ID = 6;
+SELECT @sal_msg;
+
+DELETE FROM customer WHERE ID = 6;
+SELECT @sal_msg;

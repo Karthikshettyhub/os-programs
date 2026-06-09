@@ -1,0 +1,38 @@
+create table emp(
+empno int primary key,
+ename varchar(20),
+job varchar(20),
+MGR int,
+sal decimal(10,2));
+
+Table created.
+SQL> desc emp;
+
+1. Add a column commission with domain to the Employee
+table.
+
+ALTER TABLE emp
+ADD commission int;
+
+2. Insert Five Records into the Table sql
+
+INSERT INTO emp VALUES
+(101, 'raj', 'Manager', NULL, 80000.00, 5000),
+(102, 'suhan', 'Developer', 101, 60000.00, 3000),
+
+(103, 'abhi', 'Analyst', 101, 55000.00, NULL),
+(104, 'jeevan', 'Clerk', 102, 40000.00, 1500),
+(105, 'nikhil', 'Salesman', 101, 45000.00, 2500);
+
+3. Update the column details of job
+update emp set job='trainee' where empno=101;
+
+4. Rename the column of Employee table using alter command
+ALTER TABLE emp
+RENAME COLUMN ENAME TO EmployeeName;
+Table altered.
+SQL> desc emp;
+
+1. Delete the employee whose Empno is 105.
+
+DELETE FROM emp WHERE EMPNO = 105;

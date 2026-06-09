@@ -1,0 +1,47 @@
+CREATE TABLE Employ(
+E_id INT,
+E_name VARCHAR(20),
+Age INT,
+Salary DECIMAL(10,2)
+);
+
+INSERT INTO Employ VALUES
+(1,'Samarth',30,50000),
+(2,'Ramesh',25,45000),
+(3,'Seema',35,62000);
+
+DELIMITER //
+
+CREATE PROCEDURE emp_cursor()
+BEGIN
+DECLARE id INT;
+DECLARE name VARCHAR(20);
+DECLARE done INT DEFAULT 0;
+
+DECLARE cur CURSOR FOR
+SELECT E_id, E_name FROM Employ;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND
+SET done = 1;
+
+OPEN cur;
+
+read_loop: LOOP
+
+FETCH cur INTO id, name;
+
+IF done = 1 THEN
+LEAVE read_loop;
+END IF;
+
+SELECT id, name;
+
+END LOOP;
+
+CLOSE cur;
+
+END //
+
+DELIMITER ;
+
+CALL emp_cursor();
